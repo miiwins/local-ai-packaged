@@ -19,7 +19,7 @@ x-n8n: &service-n8n
   image: n8nio/n8n:latest
   environment:
     - DB_TYPE=postgresdb
-    - DB_POSTGRESDB_HOST=db
+    - DB_POSTGRESDB_HOST=postgres
     - DB_POSTGRESDB_USER=postgres
     - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
     - DB_POSTGRESDB_DATABASE=postgres
@@ -128,6 +128,11 @@ services:
       - 7687/tcp
     environment:
         - NEO4J_AUTH=${NEO4J_AUTH:-"neo4j/your_password"}
+        - NEO4J_server_default__advertised__address=n4jlbolt.hcai42.com
+        - NEO4J_server_bolt_advertised__address=n4jlbolt.hcai42.com:7687
+        - NEO4J_server_bolt_listen__address=0.0.0.0:7687
+        - NEO4J_dbms_security_http__access__control__allow__origin=https://n4jl.hcai42.com
+        - NEO4J_browser_remote__content__hostname__whitelist=n4jl.hcai42.com,n4jlbolt.hcai42.com
     restart: always
 
   caddy:
@@ -137,6 +142,14 @@ services:
     ports:
       - 80:80/tcp
       - 443:443/tcp
+      - 8001:8001/tcp
+      - 8002:8002/tcp
+      - 8003:8003/tcp
+      - 8004:8004/tcp
+      - 8005:8005/tcp
+      - 8006:8006/tcp
+      - 8007:8007/tcp
+      - 8008:8008/tcp
     expose:
       - 2019/tcp
       - 443/tcp

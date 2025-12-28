@@ -37,7 +37,12 @@
 
 # Neo4j
 {$NEO4J_HOSTNAME} {
-    reverse_proxy neo4j:7474
+    handle / {
+        redir /browser/ permanent
+    }
+    handle {
+        reverse_proxy neo4j:7474
+    }
 }
 
 import /etc/caddy/addons/*.conf
