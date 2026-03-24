@@ -7,3 +7,4 @@ shared-backup/
 searxng/settings.yml
 searxng/uwsgi*
 n8n/backup/credentials/
+n8n/backup/n8n-backup/credentials/
