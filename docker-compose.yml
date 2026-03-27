@@ -82,12 +82,33 @@ services:
     image: ghcr.io/open-webui/open-webui:main
     restart: unless-stopped
     container_name: open-webui
-    expose:
-      - 8080/tcp
+    ports:
+      - "8080:8080"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    environment:
+      - WEBUI_URL=https://owuid.hcai42.com
+      - ENABLE_OAUTH_SIGNUP=true
+      - OAUTH_PROVIDER_NAME=3CORS SSO
+      - OPENID_PROVIDER_URL=https://keycloak.hcai42.com/realms/3cors/.well-known/openid-configuration
+      - OAUTH_CLIENT_ID=openwebui
+      - OAUTH_CLIENT_SECRET=${OPENWEBUI_OAUTH_CLIENT_SECRET:-qKRrnyUZ1IPr8HPx2f3ASQ1UubGCpAYq}
+      - OAUTH_SCOPES=openid profile email
+      - OPENID_REDIRECT_URI=https://owuid.hcai42.com/oauth/oidc/callback
+      - ENABLE_LOGIN_FORM=false
+      - WEBUI_AUTH=true
+      - OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true
+      - ENABLE_SIGNUP=false
+      - ENABLE_WEBSOCKET_SUPPORT=true
+      - OPENAI_API_BASE_URL=http://3cors-litellm-auth:4001/v1
+      - OPENAI_API_BASE_URLS=http://3cors-litellm-auth:4001/v1
+      - OPENAI_API_KEY=sk-zSwYP-eyMXg_jLQwGq2-kQ
+      - OPENAI_API_KEYS=sk-zSwYP-eyMXg_jLQwGq2-kQ
     volumes:
       - open-webui:/app/backend/data
+    networks:
+      - default
+      - supabase_default
 
   n8n-import:
     <<: *service-n8n
@@ -103,8 +124,8 @@ services:
     <<: *service-n8n
     container_name: n8n
     restart: unless-stopped
-    expose:
-      - 5678/tcp
+    ports:
+      - "5678:5678"
     volumes:
       - n8n_storage:/home/node/.n8n
       - ./n8n/backup:/backup
@@ -417,3 +438,7 @@ services:
     image: ollama/ollama:rocm
     depends_on:
      - ollama-gpu-amd
+
+networks:
+  supabase_default:
+    external: true
